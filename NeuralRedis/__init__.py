@@ -145,7 +145,7 @@ class NeuralRedis:
                 else:
                     neurons = neurons + len(l)
             except:
-                neurons = 1
+                neurons += 1
         return neurons
 
 # ############################### TEST #################################
