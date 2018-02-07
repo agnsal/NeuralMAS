@@ -640,6 +640,32 @@ class DatasetManager:
         revEqDict[str(value)] = key
         return eqDict, revEqDict
 
+    def roundNetResult(self, netResult, minValue, bit0Value, middleValue, bit1Value, maxValue):
+        assert isinstance(netResult, list) or str(type(netResult)) == "<class 'numpy.ndarray'>"
+        assert isinstance(minValue, int) or isinstance(minValue, float)
+        assert isinstance(bit0Value, int) or isinstance(bit0Value, float)
+        assert isinstance(middleValue, int) or isinstance(middleValue, float)
+        assert isinstance(bit1Value, int) or isinstance(bit1Value, float)
+        assert isinstance(maxValue, int) or isinstance(maxValue, float)
+        convertedRes = []
+        for row in netResult:
+            convertedRow = []
+            for elem in row:
+                if elem >= minValue and elem <= maxValue:
+                    if elem < middleValue:
+                        convertedElem = bit0Value
+                    elif elem == middleValue:
+                        convertedElem = middleValue
+                    else:  # if convertedElem > middleValue
+                        convertedElem = bit1Value
+                else:
+                    if elem < minValue:
+                        convertedElem = '- OutOfRange'
+                    else:
+                        convertedElem = '+ OutOfRange'
+                convertedRow.append(convertedElem)
+            convertedRes.append(convertedRow)
+        return np.asarray(convertedRes)
 
 
 # ################################## TEST #################################
