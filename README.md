@@ -6,7 +6,9 @@ The Neural Network has been developed using Keras library, running on top of Ten
 See: 
 - https://keras.io/
 - https://www.tensorflow.org/
+
 Keras is very powerful and can run on top of Theano or CNTK too, but you can use a different technology of your choise insted of it.
+
 
 
 ## The Multi-Agent System
@@ -18,10 +20,12 @@ See:
 You can choose to develop the MAS with a different technology instead of it.
 
 
+
 ## The Communication
 The communication channel between the Neural Network and the MAS is made using Redis.
 See:
 - https://redis.io/
+
 
 
 ## The Environment
