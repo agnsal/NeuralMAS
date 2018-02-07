@@ -12,7 +12,6 @@ an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express o
 See the License for the specific language governing permissions and limitations under the License
 '''
 
-
 __author__ = 'Agnese Salutari'
 
 import numpy as np
@@ -124,6 +123,10 @@ class NeuralRedis:
                                                                 matrixToConvert=matrix, reverse=False)
         return converted
 
+    def roundNetResult(self, netResult, minValue, bit0Value, middleValue, bit1Value, maxValue):
+        return self.datasetManager.roundNetResult(netResult=netResult, minValue=minValue, bit0Value=bit0Value,
+                                                  middleValue=middleValue, bit1Value=bit1Value, maxValue=maxValue)
+
     def assignNeurons(self, matrix):
         '''
         Says how many neurons are needed in the input/output layer, given the input/output matrix.
@@ -144,82 +147,6 @@ class NeuralRedis:
             except:
                 neurons = 1
         return neurons
-
-
-
-
-#TODO TAKE NET CONFIG OUT OF THERE, DO TRAINING METHOD
-    def createNet(self, netModel, inputLayerType, inputNeurons, inputActivationFunc=None,
-                  hiddenLayerNeurons=[], hiddenActivationFunc=[], hiddenLayerType=[],
-                  outputLayerType=None, outputNeurons=1, outputActivationFunc=None):
-        assert isinstance(netModel, str) # For example: Sequential
-        assert isinstance(inputLayerType, str)   # For example: Dense
-        assert isinstance(outputLayerType, str)
-        assert isinstance(inputNeurons, int)
-        assert isinstance(outputNeurons, int)
-        assert isinstance(hiddenLayerNeurons, list)
-        assert isinstance(hiddenActivationFunc, list)
-        assert isinstance(hiddenLayerType, list)
-        for l in hiddenLayerNeurons:
-            assert isinstance(l, int)
-        for l in hiddenActivationFunc:
-            assert isinstance(l, str)
-        for l in hiddenLayerType:
-            assert isinstance(l, str)
-        assert isinstance(inputActivationFunc, str)
-        assert isinstance(outputActivationFunc, str)
-        assert callable(getattr(models, netModel.split('(')[0], None))
-        assert callable(getattr(layers, inputLayerType.split('(')[0], None))
-        assert callable(getattr(layers, outputLayerType.split('(')[0], None))
-        assert callable(getattr(activations, inputActivationFunc.split('(')[0], None))
-        assert callable(getattr(activations, outputActivationFunc.split('(')[0], None))
-
-        if '(' not in netModel:
-            netModel = netModel + '()'
-        net = eval('models.' + netModel)
-        inputL = eval(inputLayerType.split('(')[0] + '(' + str(inputNeurons))
-        net.add()
-
-        lCount = 0
-
-
-        net.add(De)
-        net.add(Dense(input_dim=inputNeurons, activation='tanh', units=inputNeurons))
-        net.add(Dense(activation='tanh', units=hiddenLayerNeurons))
-        net.add(Dense(activation='tanh', units=outputNeurons))
-        input = redimDatasetIn[0: totalLength - fold]
-        output = redimDatasetOut[0: totalLength - fold]
-        '''
-        net is a 2 layer (including hidden layer and output layer) perceptron.
-        hiddenLayerNeurons is the number of neurons we have in the internal layer and we change it to try different net
-        configurations.
-        If we have a 10-fold validation, the Piece of dataset we use for training is made of 9/10 of rows of the dataset.
-        '''
-        print('########## ' + str(foldDim) + '-fold validation of a 2 Layers Perceptron with ' +
-              str(inputNeurons) + ' Neurons in the Input Layer (and in the Output Layer) and with '
-              + str(hiddenLayerNeurons) +
-              ' Neurons in the Hidden Layer (Training Epochs = ' + str(epochsNumber) + ') ##########')
-        print('-- Training on the First ' + str(rowsToConsider - int(rowsToConsider / foldDim)) +
-              ' Dataset Rows, that correspond to '
-              + str(len(input)) + ' Rows (with the same fold dimension): it can take several minutes --')
-        # sgd = optimizers.SGD(lr=0.01, clipvalue=0.5)
-        net.compile(loss='binary_crossentropy', optimizer='Nadam', metrics=['accuracy'])
-        net.fit(input, output, epochs=epochsNumber, verbose=1, shuffle=False)
-        # Epochs (the number of repetitions of the training) is set as epochsNumber.
-        print('-- Simulating on the last ' + str(foldDim) + ' Rows of the Dataset, that correspond to ' + str(fold)
-              + ' Rows (with the same fold dimension) : it can take several minutes --')
-        inputTest = redimDatasetIn[-(fold + 1): -1]
-        outputTest = redimDatasetOut[-(fold + 1): -1]
-        score = net.evaluate(inputTest, outputTest, verbose=1)
-        print(' ')
-        print('Score: ' + str(score))
-        prediction = net.predict(inputTest, verbose=1)
-        print('Predictions:')
-        d.printMatrix(prediction)
-        reconvPred = d.netResultBackConversion(reverseEquivalenceDict, prediction)
-        print('Reconverted Predictions:')
-        print(reconvPred)
-
 
 # ############################### TEST #################################
 '''
