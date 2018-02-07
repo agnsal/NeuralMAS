@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and limitations 
 
 __author__ = 'Agnese Salutari'
 
+
 def main():
     '''
     To install Neurolab Python package see https://pythonhosted.org/neurolab/install.html
@@ -32,12 +33,26 @@ def main():
 
     '''
     The following ones are configuration variables.
+    You can change them to change the configuration.
+    datasetPath is a string containing the path of the dataset txt file..
+    foldDim is an integer containing the dimension of the fold.
+    epochNumber is an integer containing the number of epochs (steps) we want the training to last.
+    rowsToConsider is an integer in [1, infinite) containing the number of the dataset rows we want to use.
+        Actual rows number is equal to rowsToConsider + rowsToConsider * questionVars if combined = False ,
+        and it's equal to rowsToConsider * 2 otherwise.
+    hiddenLayerProportion is an integer in [1, infinite) containing the proportion of neurons of the Hidden Layer
+        (given the Input and Output Layers neuron number) of the net.
+        hiddenLayerNeurons = int((inputNeurons + outputNeurons)/2) * hiddenLayerProportion
+        If the Input has more that 1 neurons and the Output Layer has only 1 neuron:
+            hiddenLayerProportion < 2 gives a "pyramid" structure;
+                = 2 a rectangle;
+                otherwise an armonica.
     '''
     ###############################
     datasetPath = "Dataset/BreastCancerDataset.txt"
     epochsNumber = 1000
-    rowsForTraining = 630
-    hiddenLayerProportion = 1000
+    rowsForTraining = 650
+    hiddenLayerProportion = 100
     ################################
 
     nr = NeuralRedis.NeuralRedis()
@@ -73,16 +88,21 @@ def main():
     outputMatrix = nr.getDatasetOutputMatrix()
     outputLneurons = nr.assignNeurons(matrix=outputMatrix)
     print('Output Layer Neurons: ',  outputLneurons)
-    hiddenLneurons = int((inputLneurons + outputLneurons) / 2) * hiddenLayerProportion
-    print('Hidden Layer Neurons:', hiddenLneurons)
+    hiddenLneurons0 = int((inputLneurons + outputLneurons) / 2) * hiddenLayerProportion
+    hiddenLneurons1 = int(hiddenLneurons0/2)
+    hiddenLneurons2 = int(hiddenLneurons1/2)
+    hiddenLneurons3 = int(hiddenLneurons2/2)
+    print('Hidden Layer Neurons:', [hiddenLneurons0, hiddenLneurons1, hiddenLneurons2, hiddenLneurons2, hiddenLneurons3])
 
     # Start defining the input tensor:
     inputLayer = Input((inputLneurons,))
     # create the layers and pass them the input layer to get the output layer:
-    hiddenLayer0 = Dense(units=hiddenLneurons, activation='relu')(inputLayer)
-    hiddenLayer1 = Dense(units=int(hiddenLneurons/2), activation='relu')(hiddenLayer0)
-    hiddenLayer2 = Dense(units=int(hiddenLneurons/4), activation='relu')(hiddenLayer1)
-    outputLayer = Dense(units=outputLneurons, activation='relu')(hiddenLayer2)
+    hiddenLayer0 = Dense(units=hiddenLneurons0, activation='relu')(inputLayer)
+    hiddenLayer1 = Dense(units=hiddenLneurons1, activation='relu')(hiddenLayer0)
+    hiddenLayer2 = Dense(units=hiddenLneurons2, activation='relu')(hiddenLayer1)
+    hiddenLayer3 = Dense(units=hiddenLneurons2, activation='relu')(hiddenLayer2)
+    hiddenLayer4 = Dense(units=hiddenLneurons3, activation='relu')(hiddenLayer3)
+    outputLayer = Dense(units=outputLneurons, activation='relu')(hiddenLayer4)
     # Define the model's start and end points :
     neuralNet = Model(inputLayer, outputLayer)
 
@@ -103,9 +123,8 @@ def main():
 
     print(nr.getDatasetTotalMatrix()[rowsForTraining:-1])
     prediction = neuralNet.predict(inputMatrix[rowsForTraining:-1], verbose=1)
+    prediction = nr.roundNetResult(prediction, minValue=0, bit0Value=2, middleValue=3, bit1Value=4, maxValue=6)
     print('Prediction: ', prediction)
-
-
 
 
 if __name__ == '__main__':
