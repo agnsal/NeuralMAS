@@ -118,9 +118,9 @@ class NeuralRedis:
     def addToEquivalenceDict(self, dict, revDict, key, value):
         return self.datasetManager.addToEquivalenceDict(eqDict=dict, revEqDict=revDict, key=key, value=value)
 
-    def convertMatrix(self, equivalences, matrix):
+    def convertMatrix(self, equivalences, matrix, reverse):
         converted = self.datasetManager.matrixSymbolsConversion(equivalenceDictionary=equivalences,
-                                                                matrixToConvert=matrix, reverse=False)
+                                                                matrixToConvert=matrix, reverse=reverse)
         return converted
 
     def roundNetResult(self, netResult, minValue, bit0Value, middleValue, bit1Value, maxValue):
@@ -147,6 +147,12 @@ class NeuralRedis:
             except:
                 neurons += 1
         return neurons
+
+    def reshape3DMatrixTo2DForNeuralNet(self, matrix, numberOfColumns):
+        return self.datasetManager.reshape3DMatrixTo2DForNeuralNet(matrix=matrix, numberOfColumns=numberOfColumns)
+
+    def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, numberOfColumns):
+        return self.datasetManager.shapeBack2DMatrixTo3DFromNeuralNet(matrix=matrix, numberOfColumns=numberOfColumns)
 
 # ############################### TEST #################################
 '''
