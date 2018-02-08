@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and limitations 
 
 __author__ = 'Agnese Salutari'
 
+
 # To make this work, you need numpy
 import numpy as np
 
@@ -462,6 +463,16 @@ class DatasetManager:
                 convertedRow.append(convElem)
             convertedM.append(convertedRow)
         return convertedM
+
+    def reshape3DMatrixTo2DForNeuralNet(self, matrix, numberOfColumns):
+        assert isinstance(matrix, list) or str(type(matrix)) == "<class 'numpy.ndarray'>"
+        reshapedMatrix = np.asarray(matrix).reshape(len(matrix), numberOfColumns)
+        return reshapedMatrix
+
+    def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, numberOfColumns):
+        assert isinstance(matrix, list) or str(type(matrix)) == "<class 'numpy.ndarray'>"
+        reshapedMatrix = np.asarray(matrix).reshape(numberOfColumns, len(matrix))
+        return reshapedMatrix
 
     def importDatasetFromTXT(self, txtPath, separator="", stop=False, elemToFloat=False, outputColumnsPositions=[], randomShuffle = False):
         '''
