@@ -16,8 +16,6 @@ See the License for the specific language governing permissions and limitations 
 __author__ = 'Agnese Salutari'
 
 
-__author__ = 'Agnese'
-
 # To make this work, you need numpy
 import numpy as np
 
