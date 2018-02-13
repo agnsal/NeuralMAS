@@ -16,6 +16,8 @@ See the License for the specific language governing permissions and limitations 
 __author__ = 'Agnese Salutari'
 
 
+__author__ = 'Agnese'
+
 # To make this work, you need numpy
 import numpy as np
 
@@ -217,10 +219,10 @@ class DatasetManager:
             return dictionary, reverseDictionary
         else:
             counter = 0
-            ones = [1] * len(spaceList)
+            zeros = [0] * len(spaceList)
             for elem in spaceList:
-                dictionary[elem] = ones[:]
-                dictionary[elem][counter] = -1
+                dictionary[elem] = zeros[:]
+                dictionary[elem][counter] = 1
                 vector = np.asarray(dictionary[elem])
                 stringVector = str(vector).replace('\n', '')
                 # print('String Vector:')  # Test
@@ -260,13 +262,13 @@ class DatasetManager:
         else:
             counter = 0
             symbolNumber = self.countSymbols(spaceList)  # The number of symbols in the spaceList
-            ones = [1] * symbolNumber
+            zeros = [0] * symbolNumber
             for elem in spaceList:
                 try:
                     float(elem)
                 except ValueError:
-                    dictionary[elem] = ones[:]
-                    dictionary[elem][counter] = -1
+                    dictionary[elem] = zeros[:]
+                    dictionary[elem][counter] = 1
                     vector = np.asarray(dictionary[elem])
                     stringVector = str(vector.tolist()).replace('\n', '')
                     # print('String Vector:')  # Test
@@ -330,37 +332,6 @@ class DatasetManager:
             # print(resultMatrix)
         return resultMatrix
 
-    def netResultBackConversion(self, reverseDictionary, netResult):
-        '''
-        Converts back the result of a neural net, given the inverse equivalence dictionary.
-        :param reverseDictionary: a dictionary.
-        :param netResult: the matrix given by the net.
-        :return: reconvertedMatrix: a matrix.
-        '''
-        assert str(type(netResult)) == "<class 'numpy.ndarray'>" or isinstance(netResult, list)
-        if isinstance(netResult, list):
-            np.asarray(netResult)
-        roundedMatrix = []
-        for row in netResult:
-            roundedRow = []
-            dictDim = len(reverseDictionary)
-            groups = [row[x:x + dictDim] for x in range(0, len(row), dictDim)]
-            for group in groups:
-                roundedGroup = []
-                for elem in group:
-                    if elem > 0:
-                        roundedGroup.append(1)
-                    else:
-                        roundedGroup.append(-1)
-                    '''
-                    roundedElem = int(round(elem))
-                    roundedGroup.append(roundedElem)
-                    '''
-                roundedRow.append(roundedGroup)
-            roundedMatrix.append(roundedRow)
-        reconvertedMatrix = self.matrixSymbolsConversion(reverseDictionary, roundedMatrix, reverse=True)
-        return reconvertedMatrix
-
     def createAllVarTrainingsetInAndOut(self, dataset, questionVars=0, together=False):
         '''
         Expandes a dataset by making equal to 0 a variable at a time.
@@ -394,12 +365,12 @@ class DatasetManager:
                 trainingsetIn.append(row)
                 trainingsetOut.append(row)  # Append a row for input without missing variable
                 for input in row:
-                    ones = [1] * len(input)
+                    zeros = [0] * len(input)
                     if inputCount < questionVars:
                         # print('TEST')  # Test
                         trainingInRow = row
                         trainingInRow = np.delete(trainingInRow, inputCount, 0)
-                        trainingInRow = np.insert(trainingInRow, inputCount, ones, axis=0)
+                        trainingInRow = np.insert(trainingInRow, inputCount, zeros, axis=0)
                         trainingsetOut.append(row)  # Append a row for input without missing variable
                         # print(trainingInRow)  # Test
                         trainingsetIn.append(trainingInRow)
@@ -412,13 +383,13 @@ class DatasetManager:
                 trainingsetIn.append(row)
                 trainingsetOut.append(row)  # Append a row for input without missing variable
                 trainingsetOut.append(row)  # Append a row for input with missing variables
-                ones = [1] * len(row[0])
+                zeros = [0] * len(row[0])
                 q = 0
                 trainingInRow = row
                 while q < questionVars:
                     # print(q)
                     trainingInRow = np.delete(trainingInRow, q, 0)
-                    trainingInRow = np.insert(trainingInRow, q, ones, axis=0)
+                    trainingInRow = np.insert(trainingInRow, q, zeros, axis=0)
                     q += 1
                 # print('TrainingInRow:')  # Test
                 # print(trainingInRow)  # Test
@@ -464,15 +435,15 @@ class DatasetManager:
             convertedM.append(convertedRow)
         return convertedM
 
-    def reshape3DMatrixTo2DForNeuralNet(self, matrix, numberOfColumns):
+    def reshape3DMatrixTo2DForNeuralNet(self, matrix):
         assert isinstance(matrix, list) or str(type(matrix)) == "<class 'numpy.ndarray'>"
-        reshapedMatrix = np.asarray(matrix).reshape(len(matrix), numberOfColumns)
+        reshapedMatrix = np.asarray(matrix).reshape(len(matrix[0])*len(matrix), len(matrix[0][0]))
         return reshapedMatrix
 
     def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, numberOfColumns):
         assert isinstance(matrix, list) or str(type(matrix)) == "<class 'numpy.ndarray'>"
-        reshapedMatrix = np.asarray(matrix).reshape(numberOfColumns, len(matrix))
-        return reshapedMatrix
+        reshapedMatrix = np.asarray(matrix).reshape(int(len(matrix)/numberOfColumns), numberOfColumns, len(matrix[0]))
+        return reshapedMatrix.tolist()
 
     def importDatasetFromTXT(self, txtPath, separator="", stop=False, elemToFloat=False, outputColumnsPositions=[], randomShuffle = False):
         '''
