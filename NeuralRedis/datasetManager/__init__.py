@@ -181,8 +181,6 @@ class DatasetManager:
         space.sort()
         return space
 
-    # TODO: Create2DSpace o ridefinire input (va bene 2D matrix)
-
     def createSpaceEquivalenceDictionary(self, spaceList):
         '''
         Creates an equivalence dictionary given a list containing a space.
