@@ -1,5 +1,4 @@
 
-
 '''
 Copyright 2018 Agnese Salutari.
 Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -27,6 +26,7 @@ def main():
 
     import numpy as np
 
+    from keras.models import load_model
     from keras.models import Model
     from keras.layers import Dense, Input
 
@@ -38,16 +38,10 @@ def main():
     datasetPath is a string containing the path of the dataset txt file..
     foldDim is an integer containing the dimension of the fold.
     epochNumber is an integer containing the number of epochs (steps) we want the training to last.
-    rowsToConsider is an integer in [1, infinite) containing the number of the dataset rows we want to use.
-        Actual rows number is equal to rowsToConsider + rowsToConsider * questionVars if combined = False ,
-        and it's equal to rowsToConsider * 2 otherwise.
+    rowsForTraining is an integer in [1, infinite) containing the number of the dataset rows we want to use for training.
     hiddenLayerProportion is an integer in [1, infinite) containing the proportion of neurons of the Hidden Layer
         (given the Input and Output Layers neuron number) of the net.
         hiddenLayerNeurons = int((inputNeurons + outputNeurons)/2) * hiddenLayerProportion
-        If the Input has more that 1 neurons and the Output Layer has only 1 neuron:
-            hiddenLayerProportion < 2 gives a "pyramid" structure;
-                = 2 a rectangle;
-                otherwise an armonica.
     '''
     ###############################
     datasetPath = "Dataset/BreastCancerDataset.txt"
@@ -95,6 +89,9 @@ def main():
     hiddenLneurons3 = int(hiddenLneurons2/2)
     print('Hidden Layer Neurons:', [hiddenLneurons0, hiddenLneurons1, hiddenLneurons2, hiddenLneurons2, hiddenLneurons3])
 
+    '''
+    # PAY ATTENTION!!! THE FOLLOWING LINES OF CODE ARE NEEDED FOR NET CREATION AND TRAINING
+    # COMMENT THIS CODE IF YOU IMPORT THE TRAINED NET FROM A FILE
     # Start defining the input tensor:
     inputLayer = Input((inputLneurons,))
     # create the layers and pass them the input layer to get the output layer:
@@ -106,19 +103,13 @@ def main():
     outputLayer = Dense(units=outputLneurons, activation='relu')(hiddenLayer4)
     # Define the model's start and end points :
     neuralNet = Model(inputLayer, outputLayer)
-
-    # weights = neuralNet.layers[0].get_weights()  # Test
-    # print('The net is initialized with weights:')  # Test
-    # print(weights)  # Test
-
     neuralNet.compile(optimizer='Nadam', loss='mean_absolute_percentage_error', metrics=['accuracy'])
     neuralNet.fit(x=inputMatrix[0:rowsForTraining], y=outputMatrix[0:rowsForTraining], epochs=epochsNumber,
                   verbose=1, shuffle=False)
+    neuralNet.save(filepath='BreastCancerNet.h5', overwrite=True, include_optimizer=True)
+    '''
 
-    # weights = neuralNet.layers[0].get_weights()  # Test
-    # print('The net is trained with weights:')  # Test
-    # print(weights)  # Test
-
+    neuralNet = load_model('BreastCancerNet.h5')
     netLoss = neuralNet.evaluate(x=inputMatrix[rowsForTraining:-1], y=outputMatrix[rowsForTraining:-1], verbose=1)
     print('Score (netLoss): ', netLoss)
 
@@ -129,6 +120,7 @@ def main():
     print(prediction)
 
 
+
 if __name__ == '__main__':
     '''
     To install Neurolab Python package see https://pythonhosted.org/neurolab/install.html
@@ -136,3 +128,4 @@ if __name__ == '__main__':
     It uses Numpy and Scipy.
     '''
     main()
+    
