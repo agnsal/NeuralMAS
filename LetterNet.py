@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and limitations 
 
 __author__ = 'Agnese Salutari'
 
+ 
 
 def main():
 
@@ -40,7 +41,7 @@ def main():
     ###############################
     datasetPath = "Letter Dataset/Letter Dataset.txt"
     outputColumnsPositions = [0]
-    elementsXConvertedOutputs = [27]
+    elementsXConvertedOutputs = [26]
     epochsNumber = 100
     rowsForTraining = 19950
     hiddenLayerProportion = 100
@@ -83,7 +84,7 @@ def main():
     print(reshapedOutputMatrix[0:10])
     print('...')
 
-    '''
+
     # PAY ATTENTION!!! THE FOLLOWING LINES OF CODE ARE NEEDED FOR NET CREATION AND TRAINING
     # COMMENT THIS CODE IF YOU IMPORT THE TRAINED NET FROM A FILE
     # Start defining the input tensor:
@@ -100,7 +101,7 @@ def main():
     neuralNet.fit(x=inputMatrix[0:rowsForTraining], y=reshapedOutputMatrix[0:rowsForTraining], epochs=epochsNumber,
                   verbose=1, shuffle=False)
     neuralNet.save(filepath='LetterNet.h5', overwrite=True, include_optimizer=True)
-    '''
+
 
     neuralNet = load_model('LetterNet.h5')
 
