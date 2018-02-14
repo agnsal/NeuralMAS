@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and limitations 
 __author__ = 'Agnese Salutari'
 
 
+__author__ = 'Agnese'
+
 import numpy as np
 
 import NeuralRedis.datasetManager as dm
@@ -152,8 +154,8 @@ class NeuralRedis:
     def reshape3DMatrixTo2DForNeuralNet(self, matrix):
         return self.datasetManager.reshape3DMatrixTo2DForNeuralNet(matrix=matrix)
 
-    def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, numberOfColumns):
-        return self.datasetManager.shapeBack2DMatrixTo3DFromNeuralNet(matrix=matrix, numberOfColumns=numberOfColumns)
+    def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, elementsXColumnList):
+        return self.datasetManager.shapeBack2DMatrixTo3DFromNeuralNet(matrix=matrix, elementsXColumnList=elementsXColumnList)
 
 # ############################### TEST #################################
 '''
