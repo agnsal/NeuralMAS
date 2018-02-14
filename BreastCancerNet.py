@@ -15,14 +15,8 @@ See the License for the specific language governing permissions and limitations 
 __author__ = 'Agnese Salutari'
 
 
+
 def main():
-    '''
-    To install Neurolab Python package see https://pythonhosted.org/neurolab/install.html
-    (use pip and python for Python2 or pip3 and python3 for Python3).
-    It uses Numpy and Scipy.
-    To install Keras see https://keras.io/.
-    It uses TensorFlow.
-    '''
 
     import numpy as np
 
@@ -35,7 +29,8 @@ def main():
     '''
     The following ones are configuration variables.
     You can change them to change the configuration.
-    datasetPath is a string containing the path of the dataset txt file..
+    datasetPath is a string containing the path of the dataset txt file.
+    outputColumnsPositions is the list containing the positions of the output columns.
     foldDim is an integer containing the dimension of the fold.
     epochNumber is an integer containing the number of epochs (steps) we want the training to last.
     rowsForTraining is an integer in [1, infinite) containing the number of the dataset rows we want to use for training.
@@ -45,6 +40,7 @@ def main():
     '''
     ###############################
     datasetPath = "Dataset/BreastCancerDataset.txt"
+    outputColumnsPositions = [10]
     epochsNumber = 1000
     rowsForTraining = 650
     hiddenLayerProportion = 100
@@ -56,7 +52,7 @@ def main():
     # nr.getDatasetMatrixFromRedisQueue(queueName='prova', stop=False, outputColumnsPositions=[], randomShuffle=False)
     # print(nr.datasetManager.getInputMatrix())
     nr.getDatasetMatrixFromTXT(txtPath=datasetPath, separator=',', stop=False, elemToFloat=True,
-                               outputColumnsPositions=[10], randomShuffle=False)
+                               outputColumnsPositions=outputColumnsPositions, randomShuffle=False)
     nr.removeColumnsFromInputMatrix([0])
     # nr.printTotalMatrix()  # Test
     # nr.printInputMatrix()  # Test
@@ -88,7 +84,7 @@ def main():
     hiddenLneurons2 = int(hiddenLneurons1/2)
     hiddenLneurons3 = int(hiddenLneurons2/2)
     print('Hidden Layer Neurons:', [hiddenLneurons0, hiddenLneurons1, hiddenLneurons2, hiddenLneurons2, hiddenLneurons3])
-
+    
     '''
     # PAY ATTENTION!!! THE FOLLOWING LINES OF CODE ARE NEEDED FOR NET CREATION AND TRAINING
     # COMMENT THIS CODE IF YOU IMPORT THE TRAINED NET FROM A FILE
@@ -120,12 +116,12 @@ def main():
     print(prediction)
 
 
-
 if __name__ == '__main__':
     '''
-    To install Neurolab Python package see https://pythonhosted.org/neurolab/install.html
-    (use pip and python for Python2 or pip3 and python3 for Python3).
-    It uses Numpy and Scipy.
+        Numpy is needed.
+        To install Keras see https://keras.io/.
+        It uses TensorFlow.
+        h5py required: sudo pip3 install h5py.
     '''
     main()
     
