@@ -1,5 +1,4 @@
 
-
 '''
 Copyright 2018 Agnese Salutari.
 Licensed under the Apache License, Version 2.0 (the "License"); 
@@ -17,11 +16,6 @@ __author__ = 'Agnese Salutari'
 
 
 def main():
-    '''
-    Numpy is needed.
-    To install Keras see https://keras.io/.
-    It uses TensorFlow.
-    '''
 
     import numpy as np
 
@@ -34,7 +28,9 @@ def main():
     '''
     The following ones are configuration variables.
     You can change them to change the configuration.
-    datasetPath is a string containing the path of the dataset txt file..
+    datasetPath is a string containing the path of the dataset txt file.
+    outputColumnsPositions is the list containing the positions of the output columns.
+    elementsXConvertedOutputs is the list containing the lengths of the output columns after symbols convertion.
     epochNumber is an integer containing the number of epochs (steps) we want the training to last.
     rowsForTraining is an integer in [1, infinite) containing the number of the dataset rows we want to use.
     hiddenLayerProportion is an integer in [1, infinite) containing the proportion of neurons of the Hidden Layer
@@ -43,7 +39,9 @@ def main():
     '''
     ###############################
     datasetPath = "Letter Dataset/Letter Dataset.txt"
-    epochsNumber = 200
+    outputColumnsPositions = [0]
+    elementsXConvertedOutputs = [27]
+    epochsNumber = 100
     rowsForTraining = 19950
     hiddenLayerProportion = 100
     ################################
@@ -51,7 +49,7 @@ def main():
     nr = NeuralRedis.NeuralRedis()
     nr.datasetManager
     nr.getDatasetMatrixFromTXT(txtPath=datasetPath, separator=',', stop=False, elemToFloat=True,
-                               outputColumnsPositions=[0], randomShuffle=False)
+                               outputColumnsPositions=outputColumnsPositions, randomShuffle=False)
     # nr.printTotalMatrix()  # Test
     # nr.printInputMatrix()  # Test
     # nr.printOutputMatrix()  # Test
@@ -80,8 +78,12 @@ def main():
     hiddenLneurons1 = int(hiddenLneurons0/2)
     hiddenLneurons2 = int(hiddenLneurons1/2)
     print('Hidden Layer Neurons:', [hiddenLneurons0, hiddenLneurons1, hiddenLneurons1, hiddenLneurons2])
+    reshapedOutputMatrix = nr.reshape3DMatrixTo2DForNeuralNet(matrix=outputMatrix)
+    print('Reshaped Output Matrix:')
+    print(reshapedOutputMatrix[0:10])
+    print('...')
 
-    '''
+
     # PAY ATTENTION!!! THE FOLLOWING LINES OF CODE ARE NEEDED FOR NET CREATION AND TRAINING
     # COMMENT THIS CODE IF YOU IMPORT THE TRAINED NET FROM A FILE
     # Start defining the input tensor:
@@ -95,13 +97,10 @@ def main():
     # Define the model's start and end points :
     neuralNet = Model(inputLayer, outputLayer)
     neuralNet.compile(optimizer='Nadam', loss='binary_crossentropy', metrics=['accuracy'])
-    reshapedOutputMatrix = nr.reshape3DMatrixTo2DForNeuralNet(matrix=outputMatrix)
-    print('Reshaped Output Matrix:')
-    print(reshapedOutputMatrix)
     neuralNet.fit(x=inputMatrix[0:rowsForTraining], y=reshapedOutputMatrix[0:rowsForTraining], epochs=epochsNumber,
                   verbose=1, shuffle=False)
     neuralNet.save(filepath='LetterNet.h5', overwrite=True, include_optimizer=True)
-    '''
+
 
     neuralNet = load_model('LetterNet.h5')
 
@@ -113,7 +112,8 @@ def main():
     print('Prediction: ')
     print(prediction)
     prediction = nr.roundNetResult(prediction, minValue=-1, bit0Value=0, middleValue=0.5, bit1Value=1, maxValue=2)
-    prediction = nr.shapeBack2DMatrixTo3DFromNeuralNet(matrix=prediction, numberOfColumns=len(nr.getDatasetOutputMatrix()[0]))
+    prediction = nr.shapeBack2DMatrixTo3DFromNeuralNet(matrix=prediction,
+                                                       elementsXColumnList=elementsXConvertedOutputs)
     prediction = nr.convertMatrix(equivalences=outputRevEq, matrix=prediction, reverse=True)
     print('Converted Prediction: ')
     print(prediction)
@@ -122,9 +122,10 @@ def main():
 
 if __name__ == '__main__':
     '''
-    To install Neurolab Python package see https://pythonhosted.org/neurolab/install.html
-    (use pip and python for Python2 or pip3 and python3 for Python3).
-    It uses Numpy and Scipy.
+        Numpy is needed.
+        To install Keras see https://keras.io/.
+        It uses TensorFlow.
+        h5py required: sudo pip3 install h5py.
     '''
     main()
     
