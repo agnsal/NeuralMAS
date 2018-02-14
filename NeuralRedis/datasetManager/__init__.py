@@ -449,11 +449,16 @@ class DatasetManager:
         assert len(elementsXColumnList) > 0
         reshapedMatrix = []
         for row in matrix:
-            reshapedRow = [row[0:elementsXColumnList[0] - 1].tolist()]
+            # print('row', row)  # Test
+            reshapedRow = [row[0:elementsXColumnList[0]].tolist()]
             count = 1
+            index = elementsXColumnList[0]
             while count < len(elementsXColumnList):
-                reshapedRow.append([row[(elementsXColumnList[count - 1]):(elementsXColumnList[count - 1] + elementsXColumnList[count])].tolist()])
+                oldIndex = index
+                index = index + elementsXColumnList[count]
+                reshapedRow.append([row[oldIndex:index].tolist()])
                 count += 1
+            # print('reshaped Row: ', reshapedRow)  # Test
             reshapedMatrix.append(reshapedRow)
         return reshapedMatrix
 
