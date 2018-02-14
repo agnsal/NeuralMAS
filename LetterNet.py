@@ -42,7 +42,7 @@ def main():
     datasetPath = "Letter Dataset/Letter Dataset.txt"
     outputColumnsPositions = [0]
     elementsXConvertedOutputs = [26]
-    epochsNumber = 100
+    epochsNumber = 50
     rowsForTraining = 19950
     hiddenLayerProportion = 100
     ################################
