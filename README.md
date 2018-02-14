@@ -33,3 +33,10 @@ You can use it on both Linux and Windows, and it is compatible with Docker too:
 See:
 - https://github.com/agnsal/docker-PyRedis
 - https://www.docker.com/
+
+## Instructions
+- To join the trained net file pieces and decompress it:
+```sh
+  cat LetterNet.h5* > LetterNet.h5.tar.gz
+  tar -xvzf LetterNet.h5.tar.gz
+```
