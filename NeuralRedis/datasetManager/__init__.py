@@ -242,7 +242,6 @@ class DatasetManager:
                 count += 1
         return count
 
-
     def createSpaceEquilalenceArrayDictionary(self, spaceList):
         '''
         Creates an equivalence dictionary of arrays for string elements (symbols) only given a list containing a space.
@@ -433,13 +432,30 @@ class DatasetManager:
 
     def reshape3DMatrixTo2DForNeuralNet(self, matrix):
         assert isinstance(matrix, list) or str(type(matrix)) == "<class 'numpy.ndarray'>"
-        reshapedMatrix = np.asarray(matrix).reshape(len(matrix[0])*len(matrix), len(matrix[0][0]))
-        return reshapedMatrix
+        matrix2D = []
+        for row in matrix:
+            row2D = []
+            for elem in row:
+                if isinstance(elem, list) or str(type(elem)) == "<class 'numpy.ndarray'>":
+                    row2D.extend(elem)
+                else:
+                    row2D.append(elem)
+            matrix2D.append(row2D)
+        return matrix2D
 
-    def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, numberOfColumns):
+    def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, elementsXColumnList):
         assert isinstance(matrix, list) or str(type(matrix)) == "<class 'numpy.ndarray'>"
-        reshapedMatrix = np.asarray(matrix).reshape(int(len(matrix)/numberOfColumns), numberOfColumns, len(matrix[0]))
-        return reshapedMatrix.tolist()
+        assert isinstance(elementsXColumnList, list) or str(type(elementsXColumnList)) == "<class 'numpy.ndarray'>"
+        assert len(elementsXColumnList) > 0
+        reshapedMatrix = []
+        for row in matrix:
+            reshapedRow = [row[0:elementsXColumnList[0] - 1].tolist()]
+            count = 1
+            while count < len(elementsXColumnList):
+                reshapedRow.append([row[(elementsXColumnList[count - 1]):(elementsXColumnList[count - 1] + elementsXColumnList[count])].tolist()])
+                count += 1
+            reshapedMatrix.append(reshapedRow)
+        return reshapedMatrix
 
     def importDatasetFromTXT(self, txtPath, separator="", stop=False, elemToFloat=False, outputColumnsPositions=[], randomShuffle = False):
         '''
