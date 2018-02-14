@@ -84,7 +84,7 @@ def main():
     print(reshapedOutputMatrix[0:10])
     print('...')
 
-
+    '''
     # PAY ATTENTION!!! THE FOLLOWING LINES OF CODE ARE NEEDED FOR NET CREATION AND TRAINING
     # COMMENT THIS CODE IF YOU IMPORT THE TRAINED NET FROM A FILE
     # Start defining the input tensor:
@@ -101,7 +101,7 @@ def main():
     neuralNet.fit(x=inputMatrix[0:rowsForTraining], y=reshapedOutputMatrix[0:rowsForTraining], epochs=epochsNumber,
                   verbose=1, shuffle=False)
     neuralNet.save(filepath='LetterNet.h5', overwrite=True, include_optimizer=True)
-
+    '''
 
     neuralNet = load_model('LetterNet.h5')
 
