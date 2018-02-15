@@ -35,8 +35,18 @@ See:
 - https://www.docker.com/
 
 ## Instructions
-- To join the trained net file pieces and decompress it:
+1. To install Redis see: https://redis.io/
+2. To install Keras and Tensorflow see: https://keras.io/ and https://www.tensorflow.org/
+3. To install SISCtus Prolog see: https://sicstus.sics.se/
+4. To get KOINE-DALI see: https://github.com/agnsal/KOINE-DALI
+5. To install numpy and Keras dependencies:
+```sh
+  sudo pip3 install h5py
+  sudo pip3 install numpy
+```
+6. To join the trained net file pieces and decompress it:
 ```sh
   cat LetterNet.h5* > LetterNet.h5.tar.gz
   tar -xvzf LetterNet.h5.tar.gz
 ```
+
