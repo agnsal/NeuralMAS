@@ -190,3 +190,4 @@ print(np.asarray(result))
 print(len(np.asarray(result)))
 print(redism.getOldestFromRedisQueue('prova'))
 '''
+
