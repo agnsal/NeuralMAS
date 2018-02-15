@@ -39,6 +39,9 @@ def main():
         hiddenLayerNeurons = int((inputNeurons + outputNeurons)/2) * hiddenLayerProportion
     '''
     ###############################
+    redisNetQueryList = 'neuralNetQueryList'
+    redisNetSolutionList = 'neuralNetSolutionList'
+    netPauseSeconds = 1
     datasetPath = "Dataset/BreastCancerDataset.txt"
     outputColumnsPositions = [10]
     epochsNumber = 1000
@@ -84,7 +87,7 @@ def main():
     hiddenLneurons2 = int(hiddenLneurons1/2)
     hiddenLneurons3 = int(hiddenLneurons2/2)
     print('Hidden Layer Neurons:', [hiddenLneurons0, hiddenLneurons1, hiddenLneurons2, hiddenLneurons2, hiddenLneurons3])
-    
+
     '''
     # PAY ATTENTION!!! THE FOLLOWING LINES OF CODE ARE NEEDED FOR NET CREATION AND TRAINING
     # COMMENT THIS CODE IF YOU IMPORT THE TRAINED NET FROM A FILE
@@ -108,12 +111,34 @@ def main():
     neuralNet = load_model('BreastCancerNet.h5')
     netLoss = neuralNet.evaluate(x=inputMatrix[rowsForTraining:-1], y=outputMatrix[rowsForTraining:-1], verbose=1)
     print('Score (netLoss): ', netLoss)
-
     print(nr.getDatasetTotalMatrix()[rowsForTraining:-1])
     prediction = neuralNet.predict(inputMatrix[rowsForTraining:-1], verbose=1)
     prediction = nr.roundNetResult(prediction, minValue=0, bit0Value=2, middleValue=3, bit1Value=4, maxValue=6)
     print('Prediction: ')
     print(prediction)
+
+    while True:
+        firstRedisListElem = nr.waitForOldestInRedisQueue(redisQueueName=redisNetQueryList, stop=None,
+                                                          pauseSeconds=netPauseSeconds)
+        id = nr.redis2DQueueToMatrix([firstRedisListElem])[0][0]
+        print('ID: ', id)
+        query = [nr.redis2DQueueToMatrix([firstRedisListElem])[0][1:inputLneurons+1]]
+        convertedQuery = np.asarray(nr.convertMatrix(equivalences=inputEq, matrix=query, reverse=False))
+        print('Query for the Neural Net: ', convertedQuery)
+        if len(query[0]) != inputLneurons:
+            print('Invalid Query Format!')
+        else:
+            try:
+                solution = neuralNet.predict(x=convertedQuery, verbose=1)
+                print('Solution given by the Neural Net: ', solution)
+                roundedSolution = nr.roundNetResult(solution, minValue=0, bit0Value=2, middleValue=3, bit1Value=4, maxValue=6)[0][0]
+                completeSolution = [id, roundedSolution]
+                print('Rounded  Complete Solution: ', completeSolution)
+                prologSolution = "diagnosis([" + str(id) + ", " + "'breastCancer', " + str(roundedSolution) + "])"
+                print('Prolog Solution: ', prologSolution)
+                nr.writeOnRedisQueue(redisQueueName=redisNetSolutionList, item=prologSolution)
+            except:
+                print('Solution not found')
 
 
 if __name__ == '__main__':
