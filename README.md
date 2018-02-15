@@ -96,5 +96,6 @@ The agents will say when they finish the handshake.
   rpush neuralNetQueryList [897471,4,8,8,5,4,5,10,4,1]
 ```
 and so on.
+You can see the data obtained by the Net and by the MAS via the Redis monitor.
 
 13. To stop the MAS just press a button.
