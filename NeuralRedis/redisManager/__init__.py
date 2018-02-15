@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and limitations 
 
 __author__ = 'Agnese Salutari'
 
+
+
 import redis
 import numpy as np # Test
 import ast
@@ -131,7 +133,7 @@ class RedisManager:
         :param redisList: the Redis queue.
         :return: result: a 2D matrix.
         '''
-        assert isinstance(redisList, list)
+        assert isinstance(redisList, list) or str(type(redisList)) == "<class 'numpy.ndarray'>"
         result = []
         for row in redisList:
             # print('Row: ', row)  # Test
