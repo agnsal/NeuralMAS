@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and limitations 
 __author__ = 'Agnese Salutari'
 
 
-__author__ = 'Agnese'
 
 import numpy as np
+import time
 
 import NeuralRedis.datasetManager as dm
 import NeuralRedis.redisManager as rm
@@ -92,7 +92,7 @@ class NeuralRedis:
         return self.datasetManager.getInputMatrix(), self.datasetManager.getTotalMatrix(),\
                self.datasetManager.getInputSpace(), self.datasetManager.getTotalSpace()
 
-    def waitForOldestInRedisQueue(self, redisQueueName, stop=None):
+    def waitForOldestInRedisQueue(self, redisQueueName, stop=None, pauseSeconds=0):
         '''
         Returns the last element of a Redis queue. If the queue is empty, it waits while the list gains an element.
         If the stop param is setted, it waits only for a number of cycles equal to stop param.
@@ -106,13 +106,24 @@ class NeuralRedis:
             while not query:
                 query = self.redisManager.getOldestFromRedisQueue(queueName=redisQueueName)
                 print(query)
+                time.sleep(pauseSeconds)
         else:
             assert isinstance(stop, int)
             while not query and stop > 0:
                 query = self.redisManager.getOldestFromRedisQueue(queueName=redisQueueName)
                 print(query)
-                stop -=1
+                stop -= 1
+                time.sleep(pauseSeconds)
         return query
+
+    def writeOnRedisQueue(self, redisQueueName, item):
+        self.redisManager.addToRedisQueue(queueName=redisQueueName, item=item)
+
+    def redis2DQueueToMatrix(self, redisList):
+        return self.redisManager.redis2DQueueToMatrix(redisList=redisList)
+
+    def redisQueueOfListsToMatrix(self, redisList):
+        return self.redisManager.redisQueueOfListsToMatrix(redisList=redisList)
 
     def createEquivalenceDictFromSpace(self, space):
         eq, revEq = self.datasetManager.createSpaceEquilalenceArrayDictionary(spaceList=space)
@@ -156,6 +167,8 @@ class NeuralRedis:
 
     def shapeBack2DMatrixTo3DFromNeuralNet(self, matrix, elementsXColumnList):
         return self.datasetManager.shapeBack2DMatrixTo3DFromNeuralNet(matrix=matrix, elementsXColumnList=elementsXColumnList)
+
+
 
 # ############################### TEST #################################
 '''
