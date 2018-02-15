@@ -1,0 +1,22 @@
+:- compile('../mas/redis_client.pl').
+:- compile('../mas/breastCancerAgBehaviour.pl').
+:- compile('../mas/history.pl').
+
+:- dynamic state/1.
+:- assert(state(0)).
+
+
+hello :- state(0).
+helloI :>
+    print('I say hello to MASA!'), nl,
+    messageA(masa,send_message(hello(Me),Me)).
+
+hiE :>
+    retract(state(0)),
+    assert(state(1)),
+    print('MASA told hello back!'), nl.
+
+nuovoEventoE([Id, Diagnosis]) :>
+    print('Masa told a new event!'), nl,
+    danger([Id, Diagnosis], Sol),
+    mas_send([Id, Sol]).

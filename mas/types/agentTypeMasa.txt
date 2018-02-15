@@ -1,0 +1,41 @@
+:- use_module(library(file_systems)).
+:- use_module(library(system)).
+
+:- compile('../mas/redis_client.pl').
+:- compile('../../stringESE.pl').
+:- compile('../mas/MASconfig.pl').
+
+:- dynamic contatore/1.
+:- assert(contatore(0)).
+
+:- dynamic evento/1.
+
+helloE(X) :>
+    messageA(X,send_message(hi,masa)),
+    print(X), print(' ha salutato!'), nl,
+    contatore(N),M is N+1,retract(contatore(_)),assert(contatore(M)).
+
+finito :- numeroAgenti(K), contatore(K).
+
+finitoI :>
+    retract(contatore(_)),
+    print('Tutti gli agenti sono attivi!'),
+    print('MAS in attesa'), nl.
+
+redisE(X) :>
+    print('Redis told me: '), print(X), nl, atom(X),
+    pulisciStringa(X, Prolog), print(' corresponding to: '), print(Prolog), nl,
+    lavagna(Prolog).
+
+lavagna(L) :-
+    open('lavagna.pl', write, W),
+    write(W,'event('),
+    write(W, L),
+    write(W,').'),
+    close(W),
+    compile('lavagna.pl'),
+    ( event([Id, Problem, Diagnosis]) ->
+        competenza(Ag, Problem),
+        print('Competent Agent: '), print(Ag), print('.'), nl,
+        messageA(Ag,send_message(nuovoEvento([Id, Diagnosis]), masa))
+    ).
