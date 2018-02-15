@@ -3,6 +3,8 @@
 
 NeuralMAS is composed of a Koinè-DALI MAS, a Keras Neural Network and NeuralRedis, a module I made to manage Redis and the Dataset, so that the Dataset can be easily changed with another one.
 
+![](header.png)
+
 ## The Neural Network
 The Neural Network has been developed using Keras library, running on top of TensorFlow.
 See: 
