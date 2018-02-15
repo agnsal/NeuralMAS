@@ -73,21 +73,21 @@ See:
 ```
 The agents will say when they finish the handshake.
 
-9. Open another terminal to monitor Redis:
+9. Open another terminal window to monitor Redis:
 ```sh
   redis-cli monitor
 ```
-10. To open the communication channel between the Neural Net and the MAS:
+10. In another terminal window, to open the communication channel between the Neural Net and the MAS:
 ```sh
-  cd ../../
+  cd NeuralMAS/KOINE-DALI
   python3 Redis2LINDA.py
 ```
-11. To start the Neural Net:
+11. In another terminal window, to start the Neural Net:
 ```sh
-  cd ../
+  cd NeuralMAS
   python3 BreastCancerNet.py
 ```
-12. In another terminal, to make some queries, about the dataset (for example):
+12. In another terminal window, to make some queries, about the dataset (for example):
 ```sh
   redis-cli
   rpush neuralNetQueryList [776715,3,1,1,1,3,2,1,1,1]
