@@ -45,6 +45,7 @@ See:
 ```
 6. To get KOINE-DALI and its dependencies and include it in this project: 
 ```sh
+  cd NeuralMAS
   git clone https://github.com/agnsal/KOINE-DALI.git
   git clone https://github.com/agnsal/KOINE-DALI.git
   cd KOINE-DALI/DALI
