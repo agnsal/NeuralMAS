@@ -41,6 +41,7 @@ def main():
     ###############################
     redisNetQueryList = 'neuralNetQueryList'
     redisNetSolutionList = 'neuralNetSolutionList'
+    netOutChannel = 'LINDAchannel'
     netPauseSeconds = 1
     datasetPath = "Dataset/BreastCancerDataset.txt"
     outputColumnsPositions = [10]
@@ -49,7 +50,7 @@ def main():
     hiddenLayerProportion = 100
     ################################
 
-    nr = NeuralRedis.NeuralRedis()
+    nr = NeuralRedis.NeuralRedis(outChannel=netOutChannel)
     nr.datasetManager
     # nr.waitForOldestInRedisQueue(redisQueueName='prova')
     # nr.getDatasetMatrixFromRedisQueue(queueName='prova', stop=False, outputColumnsPositions=[], randomShuffle=False)
@@ -132,11 +133,10 @@ def main():
                 solution = neuralNet.predict(x=convertedQuery, verbose=1)
                 print('Solution given by the Neural Net: ', solution)
                 roundedSolution = nr.roundNetResult(solution, minValue=0, bit0Value=2, middleValue=3, bit1Value=4, maxValue=6)[0][0]
-                completeSolution = [id, roundedSolution]
+                completeSolution = [id, 'breastcancer', roundedSolution]
                 print('Rounded  Complete Solution: ', completeSolution)
-                prologSolution = "diagnosis([" + str(id) + ", " + "'breastCancer', " + str(roundedSolution) + "])"
-                print('Prolog Solution: ', prologSolution)
-                nr.writeOnRedisQueue(redisQueueName=redisNetSolutionList, item=prologSolution)
+                # nr.writeOnRedisQueue(redisQueueName=redisNetSolutionList, item=completeSolution)
+                nr.writeOnRedisChannel(completeSolution)
             except:
                 print('Solution not found')
 
