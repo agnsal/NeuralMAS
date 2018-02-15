@@ -49,7 +49,6 @@ See:
 ```sh
   cd NeuralMAS
   git clone https://github.com/agnsal/KOINE-DALI.git
-  git clone https://github.com/agnsal/KOINE-DALI.git
   cd KOINE-DALI/DALI
   git clone https://github.com/AAAI-DISIM-UnivAQ/DALI.git
   mv DALI/* .
@@ -60,7 +59,7 @@ See:
 ```
 7. To join the trained net file pieces and decompress it:
 ```sh
-  cd ../../
+  cd ../..
   cat LetterNet.h5* > LetterNet.h5.tar.gz
   tar -xvzf LetterNet.h5.tar.gz
 ```
