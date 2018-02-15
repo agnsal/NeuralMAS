@@ -16,6 +16,7 @@ __author__ = 'Agnese Salutari'
 
 
 
+
 import numpy as np
 import time
 
@@ -118,6 +119,9 @@ class NeuralRedis:
 
     def writeOnRedisQueue(self, redisQueueName, item):
         self.redisManager.addToRedisQueue(queueName=redisQueueName, item=item)
+
+    def writeOnRedisChannel(self, item):
+        self.redisManager.redisPublish(toPublish=item)
 
     def redis2DQueueToMatrix(self, redisList):
         return self.redisManager.redis2DQueueToMatrix(redisList=redisList)
