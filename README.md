@@ -34,6 +34,8 @@ See:
 
 ![](sequence.png)
 
+For more information, see NeuralMAS.pdf.
+
 ## Instructions
 1. To install Redis see: https://redis.io/
 2. To install Keras and Tensorflow see: https://keras.io/ and https://www.tensorflow.org/
