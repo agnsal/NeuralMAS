@@ -133,6 +133,8 @@ def main():
                 solution = neuralNet.predict(x=convertedQuery, verbose=1)
                 print('Solution given by the Neural Net: ', solution)
                 roundedSolution = nr.roundNetResult(solution, minValue=0, bit0Value=2, middleValue=3, bit1Value=4, maxValue=6)[0][0]
+                if isinstance(roundedSolution, str) and 'OutOfRange' in roundedSolution:
+                    roundedSolution = 0
                 completeSolution = [id, 'breastcancer', roundedSolution]
                 print('Rounded  Complete Solution: ', completeSolution)
                 # nr.writeOnRedisQueue(redisQueueName=redisNetSolutionList, item=completeSolution)
