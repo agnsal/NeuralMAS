@@ -109,12 +109,12 @@ You can see the data obtained by the Net and by the MAS via the Redis monitor.
 ![](2.png)
 
 
-## Contacts:
+## Meta:
 
 
 Agnese Salutari – agneses92@hotmail.it
 
 Distributed under the Apache 2.0 license. See ``LICENSE`` for more information.
 
-[https://github.com/agnsal](https://github.com/agnsal)
+[https://github.com/agnsal/NeuralMAS](https://github.com/agnsal/NeuralMAS)
 
