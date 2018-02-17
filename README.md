@@ -107,3 +107,14 @@ You can see the data obtained by the Net and by the MAS via the Redis monitor.
 ![](0.png)
 ![](1.png)
 ![](2.png)
+
+
+## Contacts:
+
+
+Agnese Salutari – agneses92@hotmail.it
+
+Distributed under the Apache 2.0 license. See ``LICENSE`` for more information.
+
+[https://github.com/yourname/github-link](https://github.com/agnsal)
+
